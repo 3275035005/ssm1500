@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="intangible_culture:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>intangible_culture</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="intangible_culture.war">
+      <element id="artifact" artifact-name="intangible_culture:war exploded" />
+    </root>
+  </artifact>
+</component>

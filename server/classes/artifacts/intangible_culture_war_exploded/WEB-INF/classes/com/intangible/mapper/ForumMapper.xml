@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intangible.mapper.ForumMapper">
+  <resultMap id="BaseResultMap" type="com.intangible.entity.Forum">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `title`, content, uid, create_time
+  </sql>
+  <select id="pageQuery" parameterType="com.intangible.entity.Forum" resultMap="BaseResultMap">
+    select
+    f.*, u.name AS name
+    from forum AS f left join users AS u on f.uid = u.id
+    <where>
+      <if test="title != null and title != ''">
+        and f.title = #{title}
+      </if>
+      <if test="uid != null and uid != ''">
+        and f.uid = #{uid}
+      </if>
+    </where>
+    order by f.create_time desc
+  </select>
+
+  <select id="getAll" parameterType="com.intangible.entity.Forum" resultMap="BaseResultMap">
+    select
+        f.*, u.name AS name
+    from forum AS f left join users AS u on f.uid = u.id
+    order by f.create_time desc
+  </select>
+
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from forum
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.intangible.entity.Forum" useGeneratedKeys="true">
+    insert into forum (`title`, content,  uid, create_time)
+    values (#{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},#{uid,jdbcType=INTEGER},
+            #{createTime,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="update" parameterType="com.intangible.entity.Forum">
+    update forum
+    set
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      uid = #{uid,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=VARCHAR},
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

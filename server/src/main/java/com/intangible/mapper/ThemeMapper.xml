@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intangible.mapper.ThemeMapper">
+  <resultMap id="BaseResultMap" type="com.intangible.entity.Theme">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="recommend_state" jdbcType="CHAR" property="recommendState" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.intangible.entity.Theme">
+    <result column="intro" jdbcType="LONGVARCHAR" property="intro" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, image, recommend_state, create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    intro
+  </sql>
+  <select id="pageQuery" parameterType="com.intangible.entity.Theme" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from theme
+    <where>
+      <if test="title != null and title != ''">
+        and title = #{title}
+      </if>
+      <if test="recommendState != null and recommendState != ''">
+        and recommend_state = #{recommendState}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+  <select id="getById" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from theme where id = #{id}
+  </select>
+
+  <select id="getByRecommendState" resultMap="ResultMapWithBLOBs">
+      select
+      <include refid="Base_Column_List" />
+      ,
+      <include refid="Blob_Column_List" />
+      from theme
+      <where>
+        <if test="recommendState != null and recommendState != ''">
+          and recommend_state = #{recommendState}
+        </if>
+      </where>
+      order by create_time desc
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer">
+    delete from theme
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.intangible.entity.Theme" useGeneratedKeys="true">
+    insert into theme (title, image, recommend_state, 
+      create_time, intro)
+    values (#{title,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, #{recommendState,jdbcType=CHAR}, 
+      #{createTime,jdbcType=VARCHAR}, #{intro,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="update" parameterType="com.intangible.entity.Theme">
+    update theme
+    set title = #{title,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      recommend_state = #{recommendState,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      intro = #{intro,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

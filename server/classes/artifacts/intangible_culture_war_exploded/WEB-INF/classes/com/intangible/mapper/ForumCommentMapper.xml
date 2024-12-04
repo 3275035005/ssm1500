@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intangible.mapper.ForumCommentMapper">
+  <resultMap id="BaseResultMap" type="com.intangible.entity.ForumComment">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="fid" jdbcType="VARCHAR" property="fid" />
+    <result column="fcontent" jdbcType="VARCHAR" property="fcontent" />
+    <result column="forum_id" jdbcType="INTEGER" property="forumId" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="fname" jdbcType="VARCHAR" property="fname" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `uid`, content, fid, fcontent, create_time
+  </sql>
+  <select id="pageQuery" parameterType="com.intangible.entity.ForumComment" resultMap="BaseResultMap">
+    select
+    f.*, u1.name AS uname, u1.image AS image,  u2.name AS fname
+    from
+        forum AS f
+    left join users AS u1 on f.uid = u1.id
+    left join users AS u2 on f.fid = u2.id
+    <where>
+      <if test="uid != null and uid != ''">
+        and f.uid = #{uid}
+      </if>
+    </where>
+    order by f.create_time desc
+  </select>
+
+  <select id="getListByForumId" resultMap="BaseResultMap">
+    select
+    fc.*, u1.name AS uname, u1.image AS image, u2.name AS fname
+    from
+    forum_comment AS fc
+    left join users AS u1 on fc.uid = u1.id
+    left join users AS u2 on fc.fid = u2.id
+    <where>
+      <if test="forumId != null and forumId != ''">
+        and fc.forum_id = #{forumId}
+      </if>
+    </where>
+    order by fc.create_time desc
+  </select>
+
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from forum_comment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.intangible.entity.ForumComment" useGeneratedKeys="true">
+    insert into forum_comment (`uid`, content, create_time, fid, forum_id, fcontent)
+    values (#{uid,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR},
+            #{fid,jdbcType=VARCHAR}, #{forumId,jdbcType=INTEGER}, #{fcontent,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="update" parameterType="com.intangible.entity.ForumComment">
+    update forum_comment
+    set
+      uid = #{uid,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      fid = #{fid,jdbcType=VARCHAR},
+      forum_id = #{forumId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      fcontent = #{fcontent,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

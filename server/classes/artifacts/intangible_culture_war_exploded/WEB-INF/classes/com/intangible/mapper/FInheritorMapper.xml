@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intangible.mapper.FInheritorMapper">
+  <resultMap id="BaseResultMap" type="com.intangible.entity.FInheritor">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="nation" jdbcType="VARCHAR" property="nation" />
+    <result column="birth_date" jdbcType="VARCHAR" property="birthDate" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.intangible.entity.FInheritor">
+    <result column="intro" jdbcType="LONGVARCHAR" property="intro" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, sex, nation, birth_date, image, create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    intro
+  </sql>
+
+  <select id="pageQuery" parameterType="com.intangible.entity.FInheritor"  resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from f_inheritor
+    <where>
+      <if test="name != null and name != ''">
+        and name = #{name}
+      </if>
+      <if test="sex != null and sex != ''">
+        and sex = #{sex}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+  <select id="getById" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from f_inheritor where id = #{id}
+  </select>
+
+
+  <select id="getAll" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from f_inheritor
+  </select>
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from f_inheritor
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.intangible.entity.FInheritor" useGeneratedKeys="true">
+    insert into f_inheritor (`name`, sex, nation, 
+      birth_date, image, create_time, 
+      intro)
+    values (#{name,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, #{nation,jdbcType=VARCHAR}, 
+      #{birthDate,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, 
+      #{intro,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="update" parameterType="com.intangible.entity.FInheritor">
+    update f_inheritor
+    set `name` = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=CHAR},
+      nation = #{nation,jdbcType=VARCHAR},
+      intro =  #{intro,jdbcType=LONGVARCHAR},
+      birth_date = #{birthDate,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intangible.mapper.UsersMapper">
+  <resultMap id="BaseResultMap" type="com.intangible.entity.Users">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="sex" jdbcType="CHAR" property="sex"/>
+    <result column="age" jdbcType="INTEGER" property="age"/>
+    <result column="username" jdbcType="VARCHAR" property="username"/>
+    <result column="password" jdbcType="VARCHAR" property="password"/>
+    <result column="status" jdbcType="CHAR" property="status"/>
+    <result column="image" jdbcType="VARCHAR" property="image"/>
+    <result column="role" jdbcType="CHAR" property="role"/>
+    <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, sex, age, username, `password`, `status`,image, `role`, create_time
+  </sql>
+  <select id="pageQuery" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from users
+    <where>
+      <if test="name != null and name != ''">
+        and name = #{name}
+      </if>
+      <if test="status != null and status != ''">
+        and status = #{status}
+      </if>
+      <if test="role != null and role != ''">
+        and role = #{role}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+  <select id="getUsersByUsername" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from users where username = #{username}
+  </select>
+
+  <select id="getById" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from users where id = #{id}
+  </select>
+
+  <select id="getAll"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from users
+
+  </select>
+
+    <delete id="delete" parameterType="int">
+    delete from users
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.intangible.entity.Users"
+          useGeneratedKeys="true">
+    insert into users (`name`, sex, age,
+      username, `password`, `status`,
+      `role`, image, create_time)
+    values (#{name,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, #{age,jdbcType=INTEGER},
+      #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{status,jdbcType=CHAR},
+      #{role,jdbcType=CHAR},#{image,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR})
+  </insert>
+  <update id="update" parameterType="com.intangible.entity.Users">
+    update users
+    set `name` = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=CHAR},
+      age = #{age,jdbcType=INTEGER},
+      username = #{username,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=CHAR},
+      `role` = #{role,jdbcType=CHAR},
+       `image` = #{image,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

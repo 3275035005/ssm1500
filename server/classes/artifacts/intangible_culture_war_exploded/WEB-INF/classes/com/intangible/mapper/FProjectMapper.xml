@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intangible.mapper.FProjectMapper">
+  <resultMap id="BaseResultMap" type="com.intangible.entity.FProject">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="inheritor_id" jdbcType="VARCHAR" property="inheritorId" />
+    <result column="classify_id" jdbcType="VARCHAR" property="classifyId" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="origin_time" jdbcType="VARCHAR" property="originTime" />
+    <result column="recommend_state" jdbcType="CHAR" property="recommendState" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="inheritorName" jdbcType="VARCHAR" property="inheritorName" />
+    <result column="classifyName" jdbcType="VARCHAR" property="classifyName" />
+    <result column="collectId" jdbcType="INTEGER" property="collectId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.intangible.entity.FProject">
+    <result column="intro" jdbcType="LONGVARCHAR" property="intro" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, inheritor_id, image, area, origin_time, recommend_state, create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    intro
+  </sql>
+  <select id="pageQuery" parameterType="com.intangible.entity.FProject"  resultMap="BaseResultMap">
+    select
+    fp.*, IFNULL(fi.name, "无")  AS inheritorName, fc.title AS classifyName
+    from f_project AS fp
+    left join f_inheritor AS fi on fp.inheritor_id = fi.id
+    left join f_project_classify AS fc on fp.classify_id = fc.id
+    <where>
+      <if test="inheritorId != null and inheritorId != ''">
+        and fp.inheritor_id = #{inheritorId}
+      </if>
+      <if test="title != null and title != ''">
+        and fp.title = #{title}
+      </if>
+      <if test="recommendState != null and recommendState != ''">
+        and fp.recommend_state = #{recommendState}
+      </if>
+      <if test="classifyId != null and classifyId != ''">
+        and fp.classify_id = #{classifyId}
+      </if>
+    </where>
+    order by fp.create_time desc
+  </select>
+  <select id="getById" resultMap="ResultMapWithBLOBs">
+    select
+    fp.*, IFNULL(fi.name, "无")  AS inheritorName,fc.title AS classifyName, fpc.id AS collectId
+    from f_project AS fp
+    left join f_inheritor AS fi on fp.inheritor_id = fi.id
+    left join f_project_collect AS fpc on fpc.project_id = fp.id
+    left join f_project_classify AS fc on fp.classify_id = fc.id
+      where fp.id = #{id}
+  </select>
+
+  <select id="getByRecommendState" resultMap="ResultMapWithBLOBs">
+      select
+      <include refid="Base_Column_List" />,
+      <include refid="Blob_Column_List" />
+      from
+      f_project
+      where  recommend_state = #{recommendState}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer">
+    delete from f_project
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.intangible.entity.FProject" useGeneratedKeys="true">
+    insert into f_project (title, inheritor_id,classify_id, image,
+      area, origin_time, recommend_state,
+      create_time, intro)
+    values (#{title,jdbcType=VARCHAR}, #{inheritorId,jdbcType=VARCHAR},#{classifyId,jdbcType=INTEGER}, #{image,jdbcType=VARCHAR},
+      #{area,jdbcType=VARCHAR}, #{originTime,jdbcType=VARCHAR}, #{recommendState,jdbcType=CHAR},
+      #{createTime,jdbcType=VARCHAR}, #{intro,jdbcType=LONGVARCHAR})
+  </insert>
+
+  <update id="update" parameterType="com.intangible.entity.FProject">
+    update f_project
+    set title = #{title,jdbcType=VARCHAR},
+      inheritor_id = #{inheritorId,jdbcType=VARCHAR},
+      classify_id = #{classifyId,jdbcType=INTEGER},
+      image = #{image,jdbcType=VARCHAR},
+      intro = #{intro,jdbcType=LONGVARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      origin_time = #{originTime,jdbcType=VARCHAR},
+      recommend_state = #{recommendState,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

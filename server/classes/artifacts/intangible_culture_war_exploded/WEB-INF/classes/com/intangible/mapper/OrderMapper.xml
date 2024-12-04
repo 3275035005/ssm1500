@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intangible.mapper.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.intangible.entity.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="goodsName" jdbcType="VARCHAR" property="goodsName" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="price" jdbcType="VARCHAR" property="price" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, goods_id, `status`, phone, `name`, address, price, create_time
+  </sql>
+  <select id="pageQuery" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    o.*, d.title AS goodsName, d.image AS image
+    from `order` AS o
+    left join goods AS d on o.goods_id = d.id
+    left join `users` AS u on u.id = o.user_id
+    <where>
+      <if test="goodsName != null and goodsName != ''">
+        and d.title = #{goodsName}
+      </if>
+      <if test="status != null and status != ''">
+        and o.status = #{status}
+      </if>
+      <if test="userId != null and userId != ''">
+        and o.user_id = #{userId}
+      </if>
+    </where>
+    order by o.create_time desc
+  </select>
+    <select id="getOrderById" resultMap="BaseResultMap">
+      select
+        o.*, d.title AS goodsName, d.image AS image
+      from `order` AS o
+      left join goods AS d on o.goods_id = d.id
+      where o.order_no = #{id}
+      order by o.create_time desc
+    </select>
+  <select id="getOrderByUserId" resultMap="BaseResultMap">
+    select
+      o.*, d.title AS goodsName, d.image AS image
+    from `order` AS o
+           left join goods AS d on o.goods_id = d.id
+    where o.user_id = #{id}
+    order by o.create_time desc
+  </select>
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from `order`
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyProperty="id" parameterType="com.intangible.entity.Order" useGeneratedKeys="true">
+    insert into `order` (user_id, goods_id, `status`,
+      phone, `name`, address, price,
+      create_time, order_no)
+    values (#{userId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, #{status,jdbcType=CHAR},
+      #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{price,jdbcType=VARCHAR},
+      #{createTime,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR})
+  </insert>
+  <update id="update" parameterType="com.intangible.entity.Order">
+    update `order`
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null">
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=CHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.intangible.entity.Order">
+    update `order`
+    set user_id = #{userId,jdbcType=INTEGER},
+      goods_id = #{goodsId,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=CHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      price = #{price,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

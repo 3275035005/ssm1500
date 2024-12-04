@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- Spring提供的一个多部件解析器：非文本类型的数据称之为多部件（文件）-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 配置默认的字符集编码 -->
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!-- 配置上传文件的最大大小 -->
+        <property name="maxUploadSize" value="10485760" />
+        <!-- 配置单个文件的大小 -->
+        <property name="maxUploadSizePerFile" value="524880" />
+    </bean>
+
+
+    <!--    包扫描-->
+    <context:component-scan base-package="com.intangible.controller"/>
+
+
+
+    <!--    处理器映射器 处理器适配器-->
+    <mvc:annotation-driven/>
+
+
+</beans>

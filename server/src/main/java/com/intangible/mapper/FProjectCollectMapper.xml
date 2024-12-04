@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.intangible.mapper.FProjectCollectMapper">
+  <resultMap id="BaseResultMap" type="com.intangible.entity.FProjectCollect">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="inheritorName" jdbcType="VARCHAR" property="inheritorName" />
+    <result column="classifyName" jdbcType="VARCHAR" property="classifyName" />
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, project_id, user_id, create_time
+  </sql>
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from f_project_collect
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.intangible.entity.FProjectCollect" useGeneratedKeys="true">
+    insert into f_project_collect (project_id, user_id, create_time
+      )
+    values (#{projectId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <select id="getOneByProjectIdAndUserId" parameterType="com.intangible.entity.FProjectCollect" resultMap="BaseResultMap">
+    select
+        *
+    from f_project_collect where project_id = #{projectId,jdbcType=INTEGER} and user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="getProjectByUserId" resultMap="BaseResultMap">
+    select
+     fpc.*,  fp.title AS projectName, fp.image, IFNULL(fi.name, "无")  AS inheritorName, fc.title AS classifyName
+    from f_project_collect AS fpc
+     left join  f_project AS fp on fpc.project_id = fp.id
+    left join f_inheritor AS fi on fp.inheritor_id = fi.id
+    left join f_project_classify AS fc on fp.classify_id = fc.id
+     where fpc.user_id = #{id,jdbcType=INTEGER}
+  </select>
+</mapper>
