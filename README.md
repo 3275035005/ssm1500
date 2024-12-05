@@ -33,7 +33,7 @@
 - 系统环境：jdk8、maven、node
 - 后端框架：Spring、SpringMvc、Mybatis
 - 前端框架：Vue、Elementui
-- 工具：IDEA、Navica
+- 工具：IDEA
 - 技术架构：前后端分离、B/S架构、MVC架构
 # 项目截图
 
